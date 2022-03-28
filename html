@@ -1,0 +1,163 @@
+doc.html
+
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="doc.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.light_blue-blue.min.css" />
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <title>Lista</title>
+    <link rel="shortcut icon" href="https://www.flaticon.com/svg/static/icons/svg/2666/2666505.svg" type="image/x-icon">
+</head>
+
+<body>
+    <div class="content">
+
+        <h2>vetores</h2>
+
+        <div class="input-button">
+
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="number" id="tarefa">
+                <label class="mdl-textfield__label" for="tarefa">Digite um número</label>
+            </div>
+
+            <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                Adicionar
+            </button>
+
+        </div>
+
+        <div>
+            <input type="button" id="btnlimp" value="limpar" onclick="limpar()">
+        </div>
+
+        <div class="list">
+
+            <ul></ul>
+
+        </div>
+
+    </div>
+
+    <script src="doc.js"></script>
+</body>
+
+</html>
+
+
+doc.js
+const listElement = document.querySelector('ul')
+const inputElement = document.querySelector('input')
+const buttonElement = document.querySelector('button')
+
+const tarefas = JSON.parse(localStorage.getItem('list_tarefas')) || []
+
+function mostraTarefas() {
+
+    listElement.innerHTML = ''
+
+    for (item of tarefas) {
+
+        const itemList = document.createElement('li')
+        const itemText = document.createTextNode(item)
+
+        itemList.setAttribute('class', 'mdl-list__item')
+
+        const linkElement = document.createElement('a')
+        linkElement.setAttribute('class', 'material-icons')
+
+        const linkText = document.createTextNode('delete')
+        linkElement.appendChild(linkText)
+
+        const pos = tarefas.indexOf(item)
+        linkElement.setAttribute('onclick', `removeTarefa(${pos})`)
+
+        itemList.appendChild(itemText)
+        itemList.appendChild(linkElement)
+
+        listElement.appendChild(itemList)
+    }
+}
+
+mostraTarefas()
+
+function addTerefa() {
+    const tarefa = inputElement.value
+
+    tarefas.push(tarefa)
+
+    inputElement.value = ''
+    mostraTarefas()
+    salvarNoLocalStorage()
+}
+
+buttonElement.setAttribute('onclick', 'addTerefa()')
+
+function removeTarefa(pos) {
+    tarefas.splice(pos, 1)
+    mostraTarefas()
+    salvarNoLocalStorage()
+}
+
+function salvarNoLocalStorage() {
+    localStorage.setItem('list_tarefas', JSON.stringify(tarefas))
+} 
+
+doc.css
+
+body {
+    padding-top: 32px;
+    box-sizing: border-box;
+}
+
+.content {
+    width: 600px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px;
+    border: none;
+    background-color: #efefef0c;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.16), 0 3px 6px rgba(0,0,0,0.23);
+}
+
+.input-button {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+button {
+    margin: 0 !important;
+}
+
+
+.list {
+    width: 100%;
+}
+
+ul {
+    width: 100%;
+    padding: 0;
+}
+
+li {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 20px;
+    padding: 0 !important;
+}
+
+a {
+    cursor: pointer;
+} 
